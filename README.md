@@ -7,7 +7,7 @@ After spending some time with the handedness data, we found ourselves asking que
 
 We devised this bubble chart tool to visualize these correlations in an attempt to make the data accessible and interactive. We decided to generalize the tool to allow for any subset of legal filters with an AND relationship (for instance, the default shows only answers from surveys were the subject said yes to Anxiety AND Depression).
 
-The selected filters will appear as red bubbles, while the other dimensions of the data are all represented in white. Hover a bubble to see the exact count that it represents.
+The selected filters will appear as red bubbles, while the other dimensions of the data are all represented in white. Hover over a bubble to see the exact count that it represents.
 
 ## How to Run
 Create a directory named `data` and drop the raw survey data (in csv format) in that directory. Spin up an http server in the root directory of the project, then navigate to local host on the chosen port to view the bubble chart. I use http-server from npm, but feel free to host it however you like. The specific survey batches that our visualization uses are:
