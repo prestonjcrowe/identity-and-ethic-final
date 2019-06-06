@@ -10,6 +10,17 @@
     text: #000000;
   }
 
+  .customButton {
+    border-color: #d66061;
+    border-radius: 10px;
+    color: #e7e7e7;
+    background-color: black;
+  }
+
+  .customButton:hover {
+    border-color: #b0d68b;
+  }
+
   .visual {
     position: absolute;
     top: 50%;
@@ -34,11 +45,10 @@
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<!-- Create a div where the graph will take place -->
 
-  <button id="addbutton">Add Filter</button>
-  <button id="removebutton">Remove Filter</button>
-  <button id="viewbutton">View Filters</button>
+  <button id="addbutton" class="customButton">Add Filter</button>
+  <button id="removebutton" class="customButton">Remove Filter</button>
+  <button id="viewbutton" class="customButton">View Filters</button>
 
 
 <script>
@@ -118,7 +128,7 @@ function buildDataSet(primaryFields, ignoreFields, data) {
 
 d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
     let dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
-    var diameter = 500;
+    var diameter = 400;
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     drawBubbles(dataset)
