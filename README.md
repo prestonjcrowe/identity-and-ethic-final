@@ -1,5 +1,6 @@
 # Intelligent Machinery - Final Project
-### Identity Correlation Bubble Map (Preston Crowe & Nick Armstrong)
+### Identity Correlation Bubble Map
+#### Authors: Preston Crowe & Nick Armstrong
 After spending some time with the handedness data, we found ourselves asking questions about identity and mental illness. We wanted to find out if any obscure or overlooked dimensions of the data correlated strongly with schizophrenia, depression, anxiety, and alcoholism.
 
 We devised this bubble chart tool to visualize these correlations in an attempt to make the data accessible and interactive. We decided to generalize the tool to allow for any subset of legal filters with an AND relationship (for instance, the default shows only answers from surveys were the subject said yes to Anxiety AND Depression).
