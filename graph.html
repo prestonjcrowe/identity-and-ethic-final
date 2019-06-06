@@ -10,6 +10,13 @@
   .bubble {
     text: #000000;
   }
+
+  .visual {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
   div.tooltip {
       position: absolute;
       text-align: center;
@@ -29,8 +36,10 @@
 <script src="https://d3js.org/d3.v4.js"></script>
 
 <!-- Create a div where the graph will take place -->
-<div id="chart"></div>
-  <button id="button">dfljkghdfklgdfg</button>
+
+  <button id="addbutton">Add Filter</button>
+  <button id="removebutton">Remove Filter</button>
+  <button id="viewbutton">View Filters</button>
 
 
 <script>
@@ -42,12 +51,12 @@ function yesToAll(fields, row) {
       return false;
     }
   }
-  console.log(row)
+  //console.log(row)
   return true;
 }
 
 var dataset = {"children" : [] }
-var PRIMARY_FIELDS = ['Answer.Female', 'Answer.Indian']
+var PRIMARY_FIELDS = ['Answer.Anxiety', 'Answer.Depression']
 const IGNORE_FIELDS = [
   'Answer.BornJanFeb',
   'Answer.BornJulAug',
@@ -70,9 +79,12 @@ const IGNORE_FIELDS = [
   'Answer.RFoldArms',
   'Answer.RClaspHands',
   'Answer.LClaspHands',
+  'Answer.LShift',
+  'Answer.RShift'
 ]
 
 function buildDataSet(primaryFields, ignoreFields, data) {
+  console.log("building dataset with " + primaryFields)
   //sconsole.log(data)
   let totalRows = 0
   let nodes = {}
@@ -103,21 +115,21 @@ function buildDataSet(primaryFields, ignoreFields, data) {
     }
   }
 
-  console.log(res)
   return res
 }
 
 d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
-
-    var dataset = buildDataSet(['Answer.Schizo'], IGNORE_FIELDS, data)
+    let dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
+    //console.log(dataset)
     var diameter = 500;
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     drawBubbles(dataset)
 
 
-    function drawBubbles(freshData) {
-      var bubble = d3.pack(freshData)
+    function drawBubbles() {
+      console.log(dataset)
+      var bubble = d3.pack(dataset)
           .size([diameter, diameter])
           .padding(2.5);
 
@@ -125,10 +137,10 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
           .append("svg")
           .attr("width", diameter)
           .attr("height", diameter)
-          .attr("class", "bubble")
+          .attr("class", "visual")
           .attr("align", "center")
 
-      var bubbles = d3.hierarchy(freshData)
+      var bubbles = d3.hierarchy(dataset)
           .sum(function(d) { return d.Count; });
 
       var node = svg.selectAll(".node")
@@ -153,7 +165,6 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
               return d.r;
           })
           .style("fill", function(d,i) {
-            console.log(d);
             return PRIMARY_FIELDS.includes("Answer." + d.data.Name) ? "#d66061" : "#e7e7e7";
           });
 
@@ -161,7 +172,6 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
           .attr("dy", ".2em")
           .style("text-anchor", "middle")
           .text(function(d) {
-            console.log(d)
               return d.data.Name.substring(0, d.r / 3);
           })
           .attr("font-family", "sans-serif")
@@ -181,17 +191,46 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
               return d.r/5;
           })
           .attr("fill", "black");
-      d3.select("#button").on("click", () => updateBubbles(['Answer.Schizo']));
+      d3.select("#addbutton").on("click", addFilters);
+      d3.select("#removebutton").on("click", removeFilters);
+      d3.select("#viewbutton").on("click", viewFilters);
       d3.select(self.frameElement)
           .style("height", diameter + "px")
           .style("align", "center")
     }
 
-    function updateBubbles(filters) {
-      PRIMARY_FIELDS = filters
-      let d = buildDataSet(filters, IGNORE_FIELDS, data)
+    function addFilters() {
+      let filter = prompt('New Filter:')
+
+      let legal_filters = []
+      dataset.children.forEach((child) => legal_filters.push(child.Name))
+      if (!legal_filters.includes(filter)) {
+        alert("Illegal Filter, don't include Answer.")
+        return
+      }
+
+      filter !== null ? PRIMARY_FIELDS.push('Answer.' + filter) : null;
+      updateBubbles()
+    }
+
+    function viewFilters() {
+      let filters = []
+      dataset.children.forEach((child) => filters.push(child.Name))
+      alert("Available filters:\n" + filters)
+    }
+
+    function removeFilters() {
+      let filter = 'Answer.' + prompt('Remove Filter:\n Current Filters: ' + PRIMARY_FIELDS)
+      PRIMARY_FIELDS = PRIMARY_FIELDS.filter((field) => field !== filter)
+      updateBubbles()
+    }
+
+    function updateBubbles() {
+      console.log("i'ma build a new data set")
+      dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
       d3.select("svg").remove();
-      drawBubbles(d)
+
+      drawBubbles()
     }
 
 })
