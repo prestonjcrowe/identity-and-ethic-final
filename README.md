@@ -1,14 +1,12 @@
 # Identity and Ethics in Computing - Final Project
 ### Identity Correlation Bubble Map
-
-![Bubble Map Screenshot 1](./screenshots/bubble1.png)
-![Bubble Map Screenshot 2](./screenshots/bubble2.png)
-
-After spending some time with the handedness data, we found ourselves asking questions about identity and mental illness. We wanted to find out if any obscure or overlooked dimensions of the data correlated strongly with schizophrenia, depression, and anxiety.
+After spending some time with the handedness data, we found ourselves asking questions about identity and mental illness. We wanted to find out if any obscure or overlooked dimensions of the data correlated strongly with schizophrenia, depression, anxiety, and alcoholism.
 
 We devised this bubble chart tool to visualize these correlations in an attempt to make the data accessible and interactive. We decided to generalize the tool to allow for any subset of legal filters with an AND relationship (for instance, the default shows only answers from surveys were the subject said yes to Anxiety AND Depression).
 
 The selected filters will appear as red bubbles, while the other dimensions of the data are all represented in white. Hover a bubble to see the exact count that it represents.
+
+![Bubble Map Screenshot 1](./screenshots/bubble2.png)
 
 ## Improvements and To-do
 - We realized that the raw data was not filtered based on the *trap questions* in the survey. We weren't sure what data to ignore and which to keep, so it's likely that some data points are the result of bots rather than humans - we would like to eliminate these data points moving forward for a more accurate representation.
