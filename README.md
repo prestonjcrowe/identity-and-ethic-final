@@ -1,8 +1,8 @@
 # Identity and Ethics in Computing - Final Project
 ### Identity Correlation Bubble Map
 
-![Bubble Map Screenshot 1]("./screenshots/bubble1.png")
-![Bubble Map Screenshot 2]("./screenshots/bubble2.png")
+![Bubble Map Screenshot 1](./screenshots/bubble1.png)
+![Bubble Map Screenshot 2](./screenshots/bubble2.png)
 
 After spending some time with the handedness data, we found ourselves asking questions about identity and mental illness. We wanted to find out if any obscure or overlooked dimensions of the data correlated strongly with schizophrenia, depression, and anxiety.
 
