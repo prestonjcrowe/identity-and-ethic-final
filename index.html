@@ -126,7 +126,11 @@ function buildDataSet(primaryFields, ignoreFields, data) {
   return res
 }
 
-d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
+d3.csv("./data/Batch_2927185_batch_results.csv", function(survey1) {
+  d3.csv("./data/Batch_2930681_batch_results.csv", function(survey2) {
+    d3.csv("./data/Batch_2926198_batch_results.csv", function(survey3) {
+
+    let data = survey1.concat(survey2).concat(survey3)
     let dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
     var diameter = 400;
     var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -241,7 +245,8 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
       dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
       drawBubbles()
     }
-
+    })
+  })
 })
 
 </script>
