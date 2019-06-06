@@ -17,4 +17,4 @@ Create a directory named `data` and drop the raw survey data (in csv format) in 
 
 - We would have liked to use a larger subset of the provided survey data, but variance in the length and topic of the surveys made it difficult to scale out bubbles properly. There were also only 3 surveys that asked about Schizophrenia and Depression, which were our main targets for this assignment.
 
-![Bubble Map Screenshot 1](./screenshots/bubble2.png)
+![Bubble Map Screenshot 1](./screenshots/bubble1.png)
