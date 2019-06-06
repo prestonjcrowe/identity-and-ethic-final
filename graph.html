@@ -1,0 +1,199 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+  body {
+    background-color: #111;
+  }
+
+  .bubble {
+    text: #000000;
+  }
+  div.tooltip {
+      position: absolute;
+      text-align: center;
+      width: 60px;
+      height: 28px;
+      padding: 2px;
+      font: 12px sans-serif;
+      background: lightsteelblue;
+      border: 0px;
+      border-radius: 8px;
+      pointer-events: none;
+  }
+
+</style>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="chart"></div>
+  <button id="button">dfljkghdfklgdfg</button>
+
+
+<script>
+
+function yesToAll(fields, row) {
+  for (let j = 0; j < fields.length; j++) {
+    let field = fields[j];
+    if (row[field] !== "Yes") {
+      return false;
+    }
+  }
+  console.log(row)
+  return true;
+}
+
+var dataset = {"children" : [] }
+var PRIMARY_FIELDS = ['Answer.Female', 'Answer.Indian']
+const IGNORE_FIELDS = [
+  'Answer.BornJanFeb',
+  'Answer.BornJulAug',
+  'Answer.BornMarApr',
+  'Answer.BornMayJun',
+  'Answer.BornNovDec',
+  'Answer.HaveRHand',
+  'Answer.HaveLHand',
+  'Answer.MumRHanded',
+  'Answer.DadRHanded',
+  'Answer.RWink',
+  'Answer.LWink',
+  'Answer.RScissors',
+  'Answer.LScissors',
+  'Answer.RMouse',
+  'Answer.LMouse',
+  'Answer.RWrite',
+  'Answer.LWrite',
+  'Answer.LFoldArms',
+  'Answer.RFoldArms',
+  'Answer.RClaspHands',
+  'Answer.LClaspHands',
+]
+
+function buildDataSet(primaryFields, ignoreFields, data) {
+  //sconsole.log(data)
+  let totalRows = 0
+  let nodes = {}
+  let res = {"children" : []}
+
+  //console.log(data)
+
+  for (let i = 0; i < data.length; i++) {
+    let row = data[i]
+    if(yesToAll(primaryFields, row)) {
+      // we are interested in this rows, update our mapping with their answers
+      totalRows++;
+      for (var key in row) {
+        if( row.hasOwnProperty(key) && row[key] === "Yes" && !IGNORE_FIELDS.includes(key)) {
+          if (!nodes[key]) {
+            nodes[key] = 0;
+          }
+          nodes[key]++;
+        }
+      }
+    }
+  }
+
+
+  for (var node in nodes) {
+    if(nodes.hasOwnProperty(node) && node.startsWith('Answer')) {
+      res.children.push({ "Name" : node.substr(7), "Count": nodes[node]})
+    }
+  }
+
+  console.log(res)
+  return res
+}
+
+d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
+
+    var dataset = buildDataSet(['Answer.Schizo'], IGNORE_FIELDS, data)
+    var diameter = 500;
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    drawBubbles(dataset)
+
+
+    function drawBubbles(freshData) {
+      var bubble = d3.pack(freshData)
+          .size([diameter, diameter])
+          .padding(2.5);
+
+      var svg = d3.select("body")
+          .append("svg")
+          .attr("width", diameter)
+          .attr("height", diameter)
+          .attr("class", "bubble")
+          .attr("align", "center")
+
+      var bubbles = d3.hierarchy(freshData)
+          .sum(function(d) { return d.Count; });
+
+      var node = svg.selectAll(".node")
+          .data(bubble(bubbles).descendants())
+          .enter()
+          .filter(function(d){
+              return  !d.children
+          })
+          .append("g")
+          .attr("class", "node")
+          .attr("transform", function(d) {
+              return "translate(" + d.x + "," + d.y + ")";
+          });
+
+      node.append("title")
+          .text(function(d) {
+              return d.data.Name + ": " + d.data.Count;
+          });
+
+      node.append("circle")
+          .attr("r", function(d) {
+              return d.r;
+          })
+          .style("fill", function(d,i) {
+            console.log(d);
+            return PRIMARY_FIELDS.includes("Answer." + d.data.Name) ? "#d66061" : "#e7e7e7";
+          });
+
+      node.append("text")
+          .attr("dy", ".2em")
+          .style("text-anchor", "middle")
+          .text(function(d) {
+            console.log(d)
+              return d.data.Name.substring(0, d.r / 3);
+          })
+          .attr("font-family", "sans-serif")
+          .attr("font-size", function(d){
+              return d.r/5;
+          })
+          .attr("fill", "black");
+
+      node.append("text")
+          .attr("dy", "1.3em")
+          .style("text-anchor", "middle")
+          .text(function(d) {
+              return d.data.Count;
+          })
+          .attr("font-family",  "Gill Sans", "Gill Sans MT")
+          .attr("font-size", function(d){
+              return d.r/5;
+          })
+          .attr("fill", "black");
+      d3.select("#button").on("click", () => updateBubbles(['Answer.Schizo']));
+      d3.select(self.frameElement)
+          .style("height", diameter + "px")
+          .style("align", "center")
+    }
+
+    function updateBubbles(filters) {
+      PRIMARY_FIELDS = filters
+      let d = buildDataSet(filters, IGNORE_FIELDS, data)
+      d3.select("svg").remove();
+      drawBubbles(d)
+    }
+
+})
+
+</script>
