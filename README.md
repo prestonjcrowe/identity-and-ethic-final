@@ -8,6 +8,9 @@ The selected filters will appear as red bubbles, while the other dimensions of t
 
 ![Bubble Map Screenshot 1](./screenshots/bubble2.png)
 
+## How to Run
+Create a directory named `data` and drop the raw survey data (in csv format) in that directory. Spin up an http server in the root directory of the project, then navigate to local host on the chosen port to view the bubble chart. I use http-server from npm, but feel free to host it however you like.
+
 ## Improvements and To-do
 - We realized that the raw data was not filtered based on the *trap questions* in the survey. We weren't sure what data to ignore and which to keep, so it's likely that some data points are the result of bots rather than humans - we would like to eliminate these data points moving forward for a more accurate representation.
 
