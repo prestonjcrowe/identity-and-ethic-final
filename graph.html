@@ -1,4 +1,3 @@
-<!-- Code from d3-graph-gallery.com -->
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style> /* set the CSS */
@@ -44,6 +43,7 @@
 
 <script>
 
+// Returns true if the given row has a YES in all the fields passed in
 function yesToAll(fields, row) {
   for (let j = 0; j < fields.length; j++) {
     let field = fields[j];
@@ -51,7 +51,6 @@ function yesToAll(fields, row) {
       return false;
     }
   }
-  //console.log(row)
   return true;
 }
 
@@ -83,14 +82,14 @@ const IGNORE_FIELDS = [
   'Answer.RShift'
 ]
 
+// Selects only sets of answers where the taker of the survey answered
+// yes to all fields in primaryFields, and adds their remaining answers
+// to the bubble map data structure
 function buildDataSet(primaryFields, ignoreFields, data) {
   console.log("building dataset with " + primaryFields)
-  //sconsole.log(data)
   let totalRows = 0
   let nodes = {}
   let res = {"children" : []}
-
-  //console.log(data)
 
   for (let i = 0; i < data.length; i++) {
     let row = data[i]
@@ -108,7 +107,6 @@ function buildDataSet(primaryFields, ignoreFields, data) {
     }
   }
 
-
   for (var node in nodes) {
     if(nodes.hasOwnProperty(node) && node.startsWith('Answer')) {
       res.children.push({ "Name" : node.substr(7), "Count": nodes[node]})
@@ -120,7 +118,6 @@ function buildDataSet(primaryFields, ignoreFields, data) {
 
 d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
     let dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
-    //console.log(dataset)
     var diameter = 500;
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -128,7 +125,6 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
 
 
     function drawBubbles() {
-      console.log(dataset)
       var bubble = d3.pack(dataset)
           .size([diameter, diameter])
           .padding(2.5);
@@ -199,6 +195,7 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
           .style("align", "center")
     }
 
+    // Prompts the user to enter a new filter
     function addFilters() {
       let filter = prompt('New Filter:')
 
@@ -213,23 +210,25 @@ d3.csv("./data/Batch_2930681_batch_results.csv", function(data) {
       updateBubbles()
     }
 
+    // Alerts the user with all available filters
     function viewFilters() {
       let filters = []
       dataset.children.forEach((child) => filters.push(child.Name))
       alert("Available filters:\n" + filters)
     }
 
+    // Prompts the user for an active filter to remove
     function removeFilters() {
       let filter = 'Answer.' + prompt('Remove Filter:\n Current Filters: ' + PRIMARY_FIELDS)
       PRIMARY_FIELDS = PRIMARY_FIELDS.filter((field) => field !== filter)
       updateBubbles()
     }
 
+    // Rebuilds the dataset with the new set of primary fields add
+    // rerenders the bubble map
     function updateBubbles() {
-      console.log("i'ma build a new data set")
-      dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
       d3.select("svg").remove();
-
+      dataset = buildDataSet(PRIMARY_FIELDS, IGNORE_FIELDS, data)
       drawBubbles()
     }
 
